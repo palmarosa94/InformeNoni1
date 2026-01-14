@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Informe de Gestión 2025</title>
+
+  <!-- Tailwind (estilos) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body { background: #F9FAFB; }
+  </style>
+</head>
+
+<body class="text-gray-800">
+
+<!-- HEADER -->
+<header class="bg-white shadow border-b sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-blue-600">RIVADAVIA</h1>
+      <span class="text-xs tracking-widest text-gray-400">SEGUROS</span>
+    </div>
+
+    <div class="flex gap-2 bg-gray-100 p-1 rounded-lg">
+      <button onclick="setPeriod('q3')" id="btn-q3"
+        class="px-4 py-1.5 rounded bg-white shadow text-blue-600 text-sm">
+        3º Trimestre
+      </button>
+      <button onclick="setPeriod('q4')" id="btn-q4"
+        class="px-4 py-1.5 rounded text-gray-500 text-sm">
+        4º Trimestre
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
+  <!-- TITLE -->
+  <div>
+    <h2 id="title" class="text-3xl font-bold">Tercer Trimestre 2025</h2>
+    <p id="subtitle" class="text-gray-500">Julio - Agosto - Septiembre</p>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="bg-white p-5 rounded shadow">
+      <p class="text-sm text-gray-500">Total Ingresos</p>
+      <p id="kpi-assigned" class="text-3xl font-bold"></p>
+    </div>
+    <div class="bg-white p-5 rounded shadow">
+      <p class="text-sm text-gray-500">Total Bajas</p>
+      <p id="kpi-closed" class="text-3xl font-bold text-green-600"></p>
+    </div>
+    <div class="bg-white p-5 rounded shadow">
+      <p class="text-sm text-gray-500">Balance Neto</p>
+      <p id="kpi-pending" class="text-3xl font-bold"></p>
+    </div>
+    <div class="bg-white p-5 rounded shadow">
+      <p class="text-sm text-gray-500">Mayor Gestión</p>
+      <p id="kpi-top" class="text-xl font-bold"></p>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="bg-white p-6 rounded shadow">
+    <h3 class="font-bold mb-4">Asignados vs Cerrados</h3>
+    <canvas id="barChart" height="120"></canvas>
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-white rounded shadow overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-100 text-gray-600">
+        <tr>
+          <th class="px-4 py-3 text-left">Tramitador</th>
+          <th class="px-4 py-3 text-center">Ingresos</th>
+          <th class="px-4 py-3 text-center">Bajas</th>
+          <th class="px-4 py-3 text-center">Pendientes</th>
+          <th class="px-4 py-3 text-center">Efectividad</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer class="text-center text-gray-400 text-sm py-8">
+  Rivadavia Seguros
+</footer>
+
+<script>
+const q3Data = [
+  { name: 'Alvarez Diego', assigned: 143, closed: 91 },
+  { name: 'Bortolini Facundo', assigned: 45, closed: 233 },
+  { name: 'Fernandez M. Jose', assigned: 11, closed: 188 },
+  { name: 'Ferreiro Agustin', assigned: 349, closed: 129 },
+  { name: 'Frisa Lautaro', assigned: 183, closed: 78 },
+  { name: 'Giuliani Franco', assigned: 282, closed: 83 },
+  { name: 'Grande Florencia', assigned: 50, closed: 188 },
+  { name: 'Javier Ayelen', assigned: 60, closed: 0 },
+  { name: 'Lavecchia Luciana', assigned: 153, closed: 110 },
+  { name: 'Maccarino Georgina', assigned: 0, closed: 90 },
+  { name: 'Tkacz Agustina', assigned: 241, closed: 61 },
+  { name: 'Tomas Lisandro', assigned: 13, closed: 187 },
+];
+
+const q4Data = [
+  { name: 'Alvarez Diego', assigned: 245, closed: 143 },
+  { name: 'Bortolini Facundo', assigned: 259, closed: 125 },
+  { name: 'Fernandez M. Jose', assigned: 236, closed: 62 },
+  { name: 'Ferreiro Agustin', assigned: 231, closed: 167 },
+  { name: 'Frisa Lautaro', assigned: 149, closed: 61 },
+  { name: 'Giuliani Franco', assigned: 230, closed: 160 },
+  { name: 'Grande Florencia', assigned: 245, closed: 141 },
+  { name: 'Javier Ayelen', assigned: 80, closed: 48 },
+  { name: 'Molina Leandro', assigned: 6, closed: 0 },
+  { name: 'Tkacz Agustina', assigned: 237, closed: 163 },
+  { name: 'Tomas Lisandro', assigned: 32, closed: 120 },
+];
+
+let currentData = q3Data;
+let chart;
+
+function setPeriod(period) {
+  currentData = period === 'q3' ? q3Data : q4Data;
+
+  document.getElementById('title').innerText =
+    period === 'q3' ? 'Tercer Trimestre 2025' : 'Cuarto Trimestre 2025';
+
+  document.getElementById('subtitle').innerText =
+    period === 'q3'
+      ? 'Julio - Agosto - Septiembre'
+      : 'Octubre - Noviembre - Diciembre';
+
+  document.getElementById('btn-q3').classList.toggle('bg-white', period === 'q3');
+  document.getElementById('btn-q4').classList.toggle('bg-white', period === 'q4');
+
+  render();
+}
+
+function render() {
+  const assigned = currentData.reduce((a,b)=>a+b.assigned,0);
+  const closed = currentData.reduce((a,b)=>a+b.closed,0);
+  const pending = assigned - closed;
+  const top = [...currentData].sort((a,b)=>b.closed-a.closed)[0];
+
+  document.getElementById('kpi-assigned').innerText = assigned;
+  document.getElementById('kpi-closed').innerText = closed;
+  document.getElementById('kpi-pending').innerText = pending;
+  document.getElementById('kpi-top').innerText = top.name;
+
+  // TABLE
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+  currentData.forEach(r => {
+    const eff = r.assigned > 0 ? ((r.closed/r.assigned)*100).toFixed(0) : 'N/A';
+    tbody.innerHTML += `
+      <tr class="border-t">
+        <td class="px-4 py-2">${r.name}</td>
+        <td class="px-4 py-2 text-center">${r.assigned}</td>
+        <td class="px-4 py-2 text-center">${r.closed}</td>
+        <td class="px-4 py-2 text-center">${r.assigned - r.closed}</td>
+        <td class="px-4 py-2 text-center">${eff}%</td>
+      </tr>
+    `;
+  });
+
+  // CHART
+  if(chart) chart.destroy();
+  chart = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: currentData.map(d => d.name),
+      datasets: [
+        { label:'Ingresos', data: currentData.map(d=>d.assigned), backgroundColor:'#0085DD' },
+        { label:'Bajas', data: currentData.map(d=>d.closed), backgroundColor:'#00B27B' }
+      ]
+    },
+    options: { responsive:true }
+  });
+}
+
+render();
+</script>
+
+</body>
+</html>
