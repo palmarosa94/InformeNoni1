@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe de Gestión - Rivadavia Seguros</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Fonts: Cairo & Open Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #F9FAFB;
+            color: #333333;
+        }
+        h1, h2, h3, h4, .font-cairo {
+            font-family: 'Cairo', sans-serif;
+        }
+        .text-rivadavia-primary { color: #0085DD; }
+        .bg-rivadavia-primary { background-color: #0085DD; }
+        
+        .text-rivadavia-secondary { color: #0067BE; }
+        .text-rivadavia-green { color: #00B27B; }
+        .bg-rivadavia-green { background-color: #00B27B; }
+
+        .text-rivadavia-pink { color: #E63690; }
+        .text-rivadavia-gold { color: #F2A900; }
+
+        /* Custom Scrollbar for Table */
+        .custom-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #ccc; 
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #aaa; 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- Logo Simulado -->
+                <div class="flex flex-col">
+                    <h1 class="text-2xl font-bold tracking-tight text-rivadavia-primary leading-none">
+                        RIVADAVIA
+                    </h1>
+                    <span class="text-xs font-semibold tracking-widest text-gray-400 ml-0.5">SEGUROS</span>
+                </div>
+                <div class="hidden sm:block h-8 w-px bg-gray-200 mx-2"></div>
+                <h2 class="hidden sm:block text-lg text-gray-600">
+                    Informe de Gestión de Casos 2025
+                </h2>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500 hidden sm:block">Periodo:</span>
+                <div class="flex bg-gray-100 rounded-lg p-1">
+                    <button onclick="switchTab('q3')" id="btn-q3" class="px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all bg-white text-blue-600 shadow-sm">
+                        3º Trimestre
+                    </button>
+                    <button onclick="switchTab('q4')" id="btn-q4" class="px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all text-gray-500 hover:text-gray-700">
+                        4º Trimestre
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 pb-12">
+        
+        <!-- Title Section -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h2 id="page-title" class="text-3xl font-bold text-gray-800 font-cairo">
+                    Tercer Trimestre 2025
+                </h2>
+                <p id="page-subtitle" class="text-gray-500 mt-1 flex items-center gap-2 text-sm">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                    Julio - Agosto - Septiembre
+                </p>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Card 1 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-l-[#0085DD] hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Ingresos</p>
+                        <h3 id="kpi-ingresos" class="text-3xl font-bold mt-1 text-gray-800">0</h3>
+                    </div>
+                    <div class="p-3 rounded-full bg-blue-50">
+                        <i data-lucide="file-text" class="w-6 h-6 text-[#0085DD]"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-l-[#00B27B] hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Bajas</p>
+                        <h3 id="kpi-bajas" class="text-3xl font-bold mt-1 text-gray-800">0</h3>
+                    </div>
+                    <div class="p-3 rounded-full bg-green-50">
+                        <i data-lucide="pie-chart" class="w-6 h-6 text-[#00B27B]"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-l-[#E63690] hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Balance Neto</p>
+                        <h3 id="kpi-balance" class="text-3xl font-bold mt-1 text-gray-800">0</h3>
+                    </div>
+                    <div class="p-3 rounded-full bg-pink-50">
+                        <i data-lucide="activity" class="w-6 h-6 text-[#E63690]"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-l-[#F2A900] hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Mayor Gestión</p>
+                        <h3 id="kpi-top" class="text-3xl font-bold mt-1 text-gray-800">-</h3>
+                    </div>
+                    <div class="p-3 rounded-full bg-yellow-50">
+                        <i data-lucide="award" class="w-6 h-6 text-[#F2A900]"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Main Bar Chart -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 font-cairo">
+                        Comparativa: Asignados vs Cerrados
+                    </h3>
+                    <p class="text-sm text-gray-500">Volumen de gestión por tramitador</p>
+                </div>
+                <div class="relative w-full h-80 sm:h-96">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Insights Panel -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 font-cairo">
+                    Insights del Periodo
+                </h3>
+                
+                <div class="flex-1 space-y-6">
+                    <!-- Insight 1 -->
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 rounded-full bg-blue-500 mt-2 shrink-0"></div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-700">Líder en Volumen</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <span id="insight-leader-name" class="font-bold text-blue-600">-</span> lideró el cierre de casos con <span id="insight-leader-val">-</span> bajas.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Insight 2 -->
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 rounded-full bg-green-500 mt-2 shrink-0"></div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-700">Tasa de Resolución</p>
+                            <div class="flex items-center gap-2 mt-1">
+                                <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div id="insight-bar-res" class="h-full bg-green-500 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <span id="insight-val-res" class="text-xs font-bold text-green-600">0%</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Relación global Ingresos vs Bajas.</p>
+                        </div>
+                    </div>
+
+                    <!-- Insight 3 -->
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 rounded-full bg-purple-500 mt-2 shrink-0"></div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-700">Carga Promedio</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                Se asignaron aprox. <span id="insight-avg" class="font-bold text-gray-800">0</span> casos por tramitador.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-gray-100">
+                    <div class="bg-blue-50 rounded-lg p-4 text-center">
+                        <p class="text-xs text-blue-600 font-semibold uppercase">Gestión Total (Movimientos)</p>
+                        <p id="insight-total-mov" class="text-2xl font-bold text-blue-800 mt-1">0</p>
+                        <p class="text-xs text-blue-500">Altas + Bajas combinadas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 id="table-title" class="font-bold text-gray-800 font-cairo">Detalle de Gestión - 3º Trimestre</h3>
+                <span class="text-xs font-semibold px-2 py-1 rounded bg-blue-100 text-blue-800">Detalle</span>
+            </div>
+            <div class="overflow-x-auto custom-scroll">
+                <table class="w-full text-left text-sm text-gray-600 whitespace-nowrap">
+                    <thead class="bg-gray-50 text-xs uppercase font-semibold text-gray-500">
+                        <tr>
+                            <th class="px-6 py-3">Tramitador</th>
+                            <th class="px-6 py-3 text-center">Ingresos (Asignados)</th>
+                            <th class="px-6 py-3 text-center">Bajas (Cerrados)</th>
+                            <th class="px-6 py-3 text-center">Pendientes (Neto)</th>
+                            <th class="px-6 py-3 text-center">Efectividad</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-gray-100">
+                        <!-- Rows will be populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 border-t border-gray-200 pt-8 text-center">
+            <p class="text-sm text-gray-400">
+                Rivadavia Seguros | Datos extraídos de informe interno
+            </p>
+        </footer>
+    </main>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA ---
+        const q3Data = [
+            { name: 'Alvarez Diego', assigned: 143, closed: 91 },
+            { name: 'Bortolini Facundo', assigned: 45, closed: 233 },
+            { name: 'Fernandez M. Jose', assigned: 11, closed: 188 },
+            { name: 'Ferreiro Agustin', assigned: 349, closed: 129 },
+            { name: 'Frisa Lautaro', assigned: 183, closed: 78 },
+            { name: 'Giuliani Franco', assigned: 282, closed: 83 },
+            { name: 'Grande Florencia', assigned: 50, closed: 188 },
+            { name: 'Javier Ayelen', assigned: 60, closed: 0 },
+            { name: 'Lavecchia Luciana', assigned: 153, closed: 110 },
+            { name: 'Maccarino Georgina', assigned: 0, closed: 90 },
+            { name: 'Tkacz Agustina', assigned: 241, closed: 61 },
+            { name: 'Tomas Lisandro', assigned: 13, closed: 187 },
+        ];
+
+        const q4Data = [
+            { name: 'Alvarez Diego', assigned: 245, closed: 143 },
+            { name: 'Bortolini Facundo', assigned: 259, closed: 125 },
+            { name: 'Fernandez M. Jose', assigned: 236, closed: 62 },
+            { name: 'Ferreiro Agustin', assigned: 231, closed: 167 },
+            { name: 'Frisa Lautaro', assigned: 149, closed: 61 },
+            { name: 'Giuliani Franco', assigned: 230, closed: 160 },
+            { name: 'Grande Florencia', assigned: 245, closed: 141 },
+            { name: 'Javier Ayelen', assigned: 80, closed: 48 },
+            { name: 'Molina Leandro', assigned: 6, closed: 0 },
+            { name: 'Tkacz Agustina', assigned: 237, closed: 163 },
+            { name: 'Tomas Lisandro', assigned: 32, closed: 120 },
+        ];
+
+        // --- CHART SETUP ---
+        let mainChartInstance = null;
+        
+        const BRAND_COLORS = {
+            primary: '#0085DD',
+            secondary: '#0067BE',
+            green: '#00B27B',
+            pink: '#E63690',
+            gold: '#F2A900'
+        };
+
+        function initChart(data) {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            
+            // If exists, destroy
+            if (mainChartInstance) {
+                mainChartInstance.destroy();
+            }
+
+            mainChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.name.split(' ')[0]), // Short name
+                    datasets: [
+                        {
+                            label: 'Ingresos',
+                            data: data.map(d => d.assigned),
+                            backgroundColor: BRAND_COLORS.primary,
+                            borderRadius: 4,
+                            barPercentage: 0.7,
+                        },
+                        {
+                            label: 'Bajas',
+                            data: data.map(d => d.closed),
+                            backgroundColor: BRAND_COLORS.green,
+                            borderRadius: 4,
+                            barPercentage: 0.7,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 8
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'white',
+                            titleColor: '#333',
+                            bodyColor: '#666',
+                            borderColor: '#eee',
+                            borderWidth: 1,
+                            padding: 10,
+                            displayColors: true,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f3f4f6'
+                            },
+                            ticks: {
+                                font: { size: 11 }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: { size: 10 },
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- DOM MANIPULATION ---
+        function updateDashboard(period) {
+            const isQ3 = period === 'q3';
+            const data = isQ3 ? q3Data : q4Data;
+
+            // Update Buttons Style
+            const btnQ3 = document.getElementById('btn-q3');
+            const btnQ4 = document.getElementById('btn-q4');
+            
+            if(isQ3) {
+                btnQ3.className = "px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all bg-white text-blue-600 shadow-sm";
+                btnQ4.className = "px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all text-gray-500 hover:text-gray-700";
+            } else {
+                btnQ4.className = "px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all bg-white text-blue-600 shadow-sm";
+                btnQ3.className = "px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all text-gray-500 hover:text-gray-700";
+            }
+
+            // Update Texts
+            document.getElementById('page-title').innerText = isQ3 ? 'Tercer Trimestre 2025' : 'Cuarto Trimestre 2025';
+            document.getElementById('page-subtitle').innerHTML = `
+                <i data-lucide="calendar" class="w-4 h-4"></i>
+                ${isQ3 ? 'Julio - Agosto - Septiembre' : 'Octubre - Noviembre - Diciembre'}
+            `;
+            document.getElementById('table-title').innerText = `Detalle de Gestión - ${isQ3 ? '3º Trimestre' : '4º Trimestre'}`;
+
+            // Refresh Icons because of innerHTML change
+            lucide.createIcons();
+
+            // Calculations
+            const totalAssigned = data.reduce((a, b) => a + b.assigned, 0);
+            const totalClosed = data.reduce((a, b) => a + b.closed, 0);
+            const totalPending = totalAssigned - totalClosed;
+            const topPerformer = [...data].sort((a,b) => b.closed - a.closed)[0];
+
+            // Update KPIs
+            document.getElementById('kpi-ingresos').innerText = totalAssigned;
+            document.getElementById('kpi-bajas').innerText = totalClosed;
+            
+            const balEl = document.getElementById('kpi-balance');
+            balEl.innerText = (totalPending > 0 ? "+" : "") + totalPending;
+            balEl.style.color = totalPending > 0 ? BRAND_COLORS.pink : BRAND_COLORS.green;
+
+            document.getElementById('kpi-top').innerText = topPerformer ? topPerformer.name.split(' ')[0] : '-';
+
+            // Update Chart
+            initChart(data);
+
+            // Update Insights
+            document.getElementById('insight-leader-name').innerText = topPerformer?.name || '-';
+            document.getElementById('insight-leader-val').innerText = topPerformer?.closed || '0';
+            
+            const rate = totalAssigned > 0 ? (totalClosed / totalAssigned) * 100 : 0;
+            document.getElementById('insight-val-res').innerText = rate.toFixed(0) + '%';
+            document.getElementById('insight-bar-res').style.width = Math.min(rate, 100) + '%';
+
+            document.getElementById('insight-avg').innerText = (totalAssigned / data.length).toFixed(0);
+            document.getElementById('insight-total-mov').innerText = totalAssigned + totalClosed;
+
+            // Update Table
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            data.forEach(row => {
+                const pending = row.assigned - row.closed;
+                const eff = row.assigned > 0 ? (row.closed / row.assigned) * 100 : 0;
+                const isPositive = pending < 0;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 transition-colors border-b border-gray-50";
+                
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-gray-900">${row.name}</td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            ${row.assigned}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            ${row.closed}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-center font-bold" style="color: ${isPositive ? BRAND_COLORS.green : BRAND_COLORS.pink}">
+                        ${pending > 0 ? pending : 0} 
+                        <span class="text-xs font-normal text-gray-400">${pending < 0 ? `(Stock: ${pending})` : ''}</span>
+                    </td>
+                    <td class="px-6 py-4 text-center text-gray-500">
+                        ${eff === Infinity ? 'N/A' : eff.toFixed(0) + '%'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function switchTab(tab) {
+            updateDashboard(tab);
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            switchTab('q3');
+        });
+
+    </script>
+</body>
+</html>
